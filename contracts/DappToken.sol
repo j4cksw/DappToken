@@ -22,6 +22,9 @@ contract DappToken {
     {
         // Exception if account doesn't have enough
         require(balanceOf[msg.sender] >= _value);
+
+        balanceOf[msg.sender] -= _value;
+        balanceOf[_to] += _value;
         // Return a result as boolean
         // Transfer event
     }
