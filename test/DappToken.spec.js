@@ -57,14 +57,32 @@ contract("DappToken", (accounts) => {
           "error message must contain revert"
         );
 
-        return tokenInstance.transfer(accounts[1], 250000, { from: accounts[0] });
-      }).then((receipt) => {
+        return tokenInstance.transfer(accounts[1], 250000, {
+          from: accounts[0],
+        });
+      })
+      .then((receipt) => {
+          assert.equal(receipt.logs.length, 1, 'Should trigger only once');
+          assert.equal(receipt.logs[0].event, 'Transfer', 'Should be the "Trigger" event');
+          assert.equal(receipt.logs[0].args._from, accounts[0], 'logs the account the tokens are transferred from');
+          assert.equal(receipt.logs[0].args._to, accounts[1], 'logs the account the tokens are trensferred to');
+          assert.equal(receipt.logs[0].args._value, 250000, 'logs the transfer amount');
         return tokenInstance.balanceOf(accounts[1]);
-      }).then((balance) => {
-          assert.equal(balance.toNumber(), 250000, 'adds the amount to the receiving account.');
-          return tokenInstance.balanceOf(accounts[0]);
-      }).then((balance) => {
-          assert.equal(balance.toNumber(), 750000, 'deducts the amount from the sending account.');
+      })
+      .then((balance) => {
+        assert.equal(
+          balance.toNumber(),
+          250000,
+          "adds the amount to the receiving account."
+        );
+        return tokenInstance.balanceOf(accounts[0]);
+      })
+      .then((balance) => {
+        assert.equal(
+          balance.toNumber(),
+          750000,
+          "deducts the amount from the sending account."
+        );
       });
   });
 });
