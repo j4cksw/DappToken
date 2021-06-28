@@ -33,5 +33,7 @@ contract DappToken {
         // Return a result as boolean
         // Transfer event
         emit Transfer(msg.sender, _to, _value);
+
+        return true;
     }
 }
