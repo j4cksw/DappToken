@@ -195,6 +195,13 @@ contract("DappToken", (accounts) => {
           error.message.indexOf("revert") >= 0,
           "can not transfer value larger than approved amount."
         );
+
+        return tokenInstance.transferForm.call(fromAccount, toAccount, 10, {
+          from: spendingAccount,
+        });
+      })
+      .then((success) => {
+          assert.equal(success, true);
       });
   });
 });
