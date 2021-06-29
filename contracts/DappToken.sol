@@ -65,6 +65,7 @@ contract DappToken {
         balanceOf[_to] += _value;
         // Update the allowance
         emit Transfer(_from, _to, _value);
+        
         return true;
     }
 }

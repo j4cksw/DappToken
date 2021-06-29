@@ -242,7 +242,16 @@ contract("DappToken", (accounts) => {
         return tokenInstance.balanceOf(toAccount);
       })
       .then((balance) => {
-          assert.equal(balance.toNumber(), 10, "adds the amount to the receiving account")
+        assert.equal(
+          balance.toNumber(),
+          10,
+          "adds the amount to the receiving account"
+        );
+
+        return tokenInstance.allowance(fromAccount, spendingAccount);
+      })
+      .then((allowance) => {
+          assert.equal(allowance, 0, 'deducts the amount from the allowance')
       });
   });
 });
