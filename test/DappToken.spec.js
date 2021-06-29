@@ -143,8 +143,58 @@ contract("DappToken", (accounts) => {
         );
 
         return tokenInstance.allowance(accounts[0], accounts[1]);
-      }).then((allowance) => {
-          assert.equal(allowance.toNumber(), 100, 'stores the allowance for delegated transfer.');
+      })
+      .then((allowance) => {
+        assert.equal(
+          allowance.toNumber(),
+          100,
+          "stores the allowance for delegated transfer."
+        );
+      });
+  });
+
+  it("handles delegated token transfers", () => {
+    return DappToken.deployed()
+      .then((instance) => {
+        tokenInstance = instance;
+        fromAccount = accounts[2];
+        toAccount = accounts[3];
+        spendingAccount = accounts[4];
+        // Transfer some tokens to fromAccount
+        return tokenInstance.transfer(fromAccount, 100, { from: accounts[0] });
+      })
+      .then((receipt) => {
+        // Approve spendingAccount to spend 10 tokens from fromAccount
+        return tokenInstance.approve(spendingAccount, 10, {
+          from: fromAccount,
+        });
+      })
+      .then((receipt) => {
+        // Try transferring something larger than the sender's balance
+        return tokenInstance.transferForm(fromAccount, toAccount, 9999, {
+          from: spendingAccount,
+        });
+      })
+      .then(assert.fail)
+      .catch((error) => {
+        //console.log(error.message)
+        assert(
+          error.message.indexOf("revert") >= 0,
+          "can not transfer value larger than balance."
+        );
+
+        // Try transferring something larger than the approved amount
+        return tokenInstance.transferForm(fromAccount, toAccount, 20, {
+          from: spendingAccount,
+        });
+      })
+      .then(assert.fail)
+      .catch((error) => {
+        // console.log(error.message)
+        assert(
+          error.message.indexOf("revert") >= 0,
+          "can not transfer value larger than approved amount."
+        );
       });
   });
 });
