@@ -13,7 +13,15 @@ contract DappToken {
         uint256 _value
     );
 
+    event Approval(
+        address indexed _owner,
+        address indexed _spender,
+        uint256 _value
+    );
+
     mapping(address => uint256) public balanceOf;
+    
+    //add allowance
 
     constructor(uint256 _initialSupply) public {
         balanceOf[msg.sender] = _initialSupply;
@@ -36,4 +44,15 @@ contract DappToken {
 
         return true;
     }
+
+    // approve
+    function approve(address _spender, uint256 _value) public returns (bool success) {
+        //allowance
+
+        //Emit approve event
+        emit Approval(msg.sender, _spender, _value);
+
+        return true;
+    }
+    // transferForm
 }
