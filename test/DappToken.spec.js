@@ -202,6 +202,16 @@ contract("DappToken", (accounts) => {
       })
       .then((success) => {
           assert.equal(success, true);
+
+          return tokenInstance.transferForm.call(fromAccount, toAccount, 10, {
+            from: spendingAccount,
+          });
+      }).then((receipt) => {
+          assert.equal(receipt.logs.length, 1, 'trigger once');
+          assert.equal(receipt.logs[0].event, 'Transfer', 'should be the "Transfer" event.');
+          assert.equal(receipt.logs[0].args._from, fromAccount, 'logs the account the tokens are transferred from');
+          assert.equal(receipt.logs[0].args._to, toAccount, 'logs the account the tokns are transferred to.');
+          assert.equal(receipt.logs[0].args._value, 10, 'logs the transfer amount.');
       });
   });
 });
