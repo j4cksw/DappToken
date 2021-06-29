@@ -60,7 +60,9 @@ contract DappToken {
     function transferForm(address _from, address _to, uint256 _value) public returns (bool success) {
         require(_value <= balanceOf[_from]);
         require(_value <= allowance[_from][msg.sender]);
-        // Change the balance
+
+        balanceOf[_from] -= _value;
+        balanceOf[_to] += _value;
         // Update the allowance
         emit Transfer(_from, _to, _value);
         return true;
