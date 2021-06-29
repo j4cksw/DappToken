@@ -107,21 +107,44 @@ contract("DappToken", (accounts) => {
       });
   });
 
-  it('Approves tokens for delegated transfer', () => {
-      return DappToken.deployed().then((instance) => {
-          tokenInstance = instance;
+  it("Approves tokens for delegated transfer", () => {
+    return DappToken.deployed()
+      .then((instance) => {
+        tokenInstance = instance;
 
-          return tokenInstance.approve.call(accounts[1], 100);
-      }).then((success) => {
-          assert.equal(success, true, 'Should return true');
+        return tokenInstance.approve.call(accounts[1], 100);
+      })
+      .then((success) => {
+        assert.equal(success, true, "Should return true");
 
-          return tokenInstance.approve(accounts[1], 100);
-      }).then((receipt) => {
-            assert.equal(receipt.logs.length, 1, 'trigger once');
-            assert.equal(receipt.logs[0].event, 'Approval', 'should be the approval event');
-            assert.equal(receipt.logs[0].args._owner, accounts[0], 'logs the account the tokens are authorized by');
-            assert.equal(receipt.logs[0].args._spender, accounts[1], 'logs the account the tokens are authorized to');
-            assert.equal(receipt.logs[0].args._value, 100, 'logs the transfer amount');
+        return tokenInstance.approve(accounts[1], 100);
+      })
+      .then((receipt) => {
+        assert.equal(receipt.logs.length, 1, "trigger once");
+        assert.equal(
+          receipt.logs[0].event,
+          "Approval",
+          "should be the approval event"
+        );
+        assert.equal(
+          receipt.logs[0].args._owner,
+          accounts[0],
+          "logs the account the tokens are authorized by"
+        );
+        assert.equal(
+          receipt.logs[0].args._spender,
+          accounts[1],
+          "logs the account the tokens are authorized to"
+        );
+        assert.equal(
+          receipt.logs[0].args._value,
+          100,
+          "logs the transfer amount"
+        );
+
+        return tokenInstance.allowance(accounts[0], accounts[1]);
+      }).then((allowance) => {
+          assert.equal(allowance.toNumber(), 100, 'stores the allowance for delegated transfer.');
       });
   });
 });
