@@ -203,7 +203,7 @@ contract("DappToken", (accounts) => {
       .then((success) => {
           assert.equal(success, true);
 
-          return tokenInstance.transferForm.call(fromAccount, toAccount, 10, {
+          return tokenInstance.transferForm(fromAccount, toAccount, 10, {
             from: spendingAccount,
           });
       }).then((receipt) => {

@@ -62,7 +62,7 @@ contract DappToken {
         require(_value <= allowance[_from][msg.sender]);
         // Change the balance
         // Update the allowance
-        // Transfer event
+        emit Transfer(_from, _to, _value);
         return true;
     }
 }
