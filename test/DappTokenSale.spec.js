@@ -10,6 +10,10 @@ contract('DappYokenSale', (accounts) => {
         })
         .then((address) => {
             assert.notEqual(address, 0x0, 'has correct address');
+            
+            return tokenInstance.tokenContract();
+        }).then((address) => {
+            assert.notEqual(address, 0x0, 'has token contract address');
         });
     })
 })
