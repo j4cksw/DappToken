@@ -9,6 +9,11 @@ contract DappTokenSale {
     DappToken public tokenContract;
     uint256 public tokenPrice;
     uint256 public tokenSold;
+
+    event Sell(
+        address _buyer,
+        uint256 _amount
+    );
     
     constructor(DappToken _tokenContract, uint256 _tokenPrice) public {
         admin = msg.sender;
@@ -23,6 +28,6 @@ contract DappTokenSale {
         // require that a transfer successful
         // Keep track of number token sold
         tokenSold += _numberOfTokens;
-        // trigger sell event
+        emit Sell(msg.sender, _numberOfTokens);
     }
 }
