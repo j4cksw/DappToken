@@ -6,12 +6,12 @@ import "./DappToken.sol";
 contract DappTokenSale {
 
     address admin;
-
     DappToken public tokenContract;
+    uint256 public tokenPrice;
     
-    constructor(DappToken _tokenContract) public {
+    constructor(DappToken _tokenContract, uint256 _tokenPrice) public {
         admin = msg.sender;
         tokenContract = _tokenContract;
-        // Token price
+        tokenPrice = _tokenPrice;
     }
 }
