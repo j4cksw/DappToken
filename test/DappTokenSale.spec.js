@@ -118,5 +118,17 @@ contract("DappTokenSale", (accounts) => {
           "must be an admin to end sale."
         );
       });
+    
+      await tokenSaleInstance.endSale({ from: admin })
+
+      let tokenBalance = await tokenInstance.balanceOf(admin);
+      assert.equal(tokenBalance.toNumber(), 999990, 'returns all unsold tokens to admin.');
+    //   .then(assert.fail)
+    //   .catch((error) => {
+    //     assert(
+    //       error.message.indexOf("revert") >= 0,
+    //       "must be an admin to end sale."
+    //     );
+    //   });
   });
 });
