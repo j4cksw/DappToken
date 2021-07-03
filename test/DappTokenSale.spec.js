@@ -65,6 +65,12 @@ contract("DappTokenSale", (accounts) => {
       "increments the number of tokens sold."
     );
 
+    let tokenBalance = await tokenInstance.balanceOf(tokenSaleInstance.address);
+    assert.equal(tokenBalance.toNumber(), tokensAvailable - numberOfTokens);
+    
+    let buyerBalance = await tokenInstance.balanceOf(buyer);
+    assert.equal(buyerBalance.toNumber(), numberOfTokens);
+
     //Try to buy tokens different from the ether value
     await tokenSaleInstance
       .buyTokens(numberOfTokens, {
