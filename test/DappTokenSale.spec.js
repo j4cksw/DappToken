@@ -32,7 +32,7 @@ contract("DappTokenSale", (accounts) => {
     let tokenSaleInstance = await DappTokenSale.deployed();
 
     let numberOfTokens = 10;
-    let receipt = await tokenInstance.buyTokens(numberOfTokens, {
+    let receipt = await tokenSaleInstance.buyTokens(numberOfTokens, {
       from: buyer,
       value: numberOfTokens * tokenPrice,
     });
@@ -50,7 +50,7 @@ contract("DappTokenSale", (accounts) => {
       "logs the number of tokens purchased."
     );
 
-    let tokenSoldAmount = await tokenInstance.tokenSold();
+    let tokenSoldAmount = await tokenSaleInstance.tokenSold();
     assert.equal(
       tokenSoldAmount.toNumber(),
       numberOfTokens,
@@ -58,7 +58,7 @@ contract("DappTokenSale", (accounts) => {
     );
 
     //Try to buy tokens different from the ether value
-    tokenInstance
+    tokenSaleInstance
       .buyTokens(numberOfTokens, {
         from: buyer,
         value: 1,
