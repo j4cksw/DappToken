@@ -34,4 +34,10 @@ contract DappTokenSale {
     function multiply(uint x, uint y) internal pure returns (uint z) {
         require(y == 0 || (z = x * y) / y == x);
     }
+
+    function endSale() public {
+        require(msg.sender == admin);
+        // Transfer remaining tokens to admin
+        // Destroy contract
+    }
 }

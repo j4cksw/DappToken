@@ -67,7 +67,7 @@ contract("DappTokenSale", (accounts) => {
 
     let tokenBalance = await tokenInstance.balanceOf(tokenSaleInstance.address);
     assert.equal(tokenBalance.toNumber(), tokensAvailable - numberOfTokens);
-    
+
     let buyerBalance = await tokenInstance.balanceOf(buyer);
     assert.equal(buyerBalance.toNumber(), numberOfTokens);
 
@@ -95,6 +95,27 @@ contract("DappTokenSale", (accounts) => {
         assert(
           error.message.indexOf("revert") >= 0,
           "can not purchase more than available to the contract"
+        );
+      });
+  });
+
+  it("ends token sale", async () => {
+    let tokenSaleInstance = await DappTokenSale.deployed();
+    let tokenInstance = await DappToken.deployed();
+
+    // // Provision 75% of all tokens to the sale contract
+    // await tokenInstance.transfer(tokenSaleInstance.address, tokensAvailable, {
+    //   from: admin,
+    // });
+
+    // Try to end sale with other account other than admin
+    await tokenSaleInstance
+      .endSale({ from: buyer })
+      .then(assert.fail)
+      .catch((error) => {
+        assert(
+          error.message.indexOf("revert") >= 0,
+          "must be an admin to end sale."
         );
       });
   });
