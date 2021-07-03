@@ -30,4 +30,7 @@ contract DappTokenSale {
         tokenSold += _numberOfTokens;
         emit Sell(msg.sender, _numberOfTokens);
     }
+
+    // Multiply
+
 }
