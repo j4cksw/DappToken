@@ -3,8 +3,10 @@ const DappToken = artifacts.require("./DappToken.sol");
 
 contract("DappTokenSale", (accounts) => {
   let tokenInstance;
+  let admin = accounts[0];
   let buyer = accounts[1];
   let tokenPrice = 1000000000000000; // In WEI
+  let tokensAvailable = 750000;
   let numberOfTokens;
 
   it("initializes the contract with the correct values", () => {
@@ -30,6 +32,12 @@ contract("DappTokenSale", (accounts) => {
 
   it("facilitates token buying", async () => {
     let tokenSaleInstance = await DappTokenSale.deployed();
+    let tokenInstance = await DappToken.deployed();
+
+    // Provision 75% of all tokens to the sale contract
+    await tokenInstance.transfer(tokenSaleInstance.address, tokensAvailable, {
+      from: admin,
+    });
 
     let numberOfTokens = 10;
     let receipt = await tokenSaleInstance.buyTokens(numberOfTokens, {
@@ -58,7 +66,7 @@ contract("DappTokenSale", (accounts) => {
     );
 
     //Try to buy tokens different from the ether value
-    tokenSaleInstance
+    await tokenSaleInstance
       .buyTokens(numberOfTokens, {
         from: buyer,
         value: 1,
@@ -68,6 +76,19 @@ contract("DappTokenSale", (accounts) => {
         assert(
           error.message.indexOf("revert") >= 0,
           "msg.value must equal to number in wei"
+        );
+      });
+
+    await tokenSaleInstance
+      .buyTokens(800000, {
+        from: buyer,
+        value: numberOfTokens * tokenPrice,
+      })
+      .then(assert.fail)
+      .catch((error) => {
+        assert(
+          error.message.indexOf("revert") >= 0,
+          "can not purchase more than available to the contract"
         );
       });
   });
