@@ -24,7 +24,7 @@ contract DappTokenSale {
     // Buy tokens
     function buyTokens(uint256 _numberOfTokens) public payable {
         // require that value is equal to tokens
-        require(msg.value == _numberOfTokens * tokenPrice);
+        require(msg.value == multiply(_numberOfTokens, tokenPrice));
         // require that the contract has enough tokens
         // require that a transfer successful
         tokenSold += _numberOfTokens;
@@ -32,5 +32,7 @@ contract DappTokenSale {
     }
 
     // Multiply
-
+    function multiply(uint x, uint y) internal pure returns (uint z) {
+        require(y == 0 || (z = x * y) / y == x);
+    }
 }
