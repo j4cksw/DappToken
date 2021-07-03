@@ -118,17 +118,25 @@ contract("DappTokenSale", (accounts) => {
           "must be an admin to end sale."
         );
       });
-    
-      await tokenSaleInstance.endSale({ from: admin })
 
-      let tokenBalance = await tokenInstance.balanceOf(admin);
-      assert.equal(tokenBalance.toNumber(), 999990, 'returns all unsold tokens to admin.');
-    //   .then(assert.fail)
-    //   .catch((error) => {
-    //     assert(
-    //       error.message.indexOf("revert") >= 0,
-    //       "must be an admin to end sale."
-    //     );
-    //   });
+    await tokenSaleInstance.endSale({ from: admin });
+
+    let tokenBalance = await tokenInstance.balanceOf(admin);
+    assert.equal(
+      tokenBalance.toNumber(),
+      999990,
+      "returns all unsold tokens to admin."
+    );
+
+    await tokenSaleInstance
+      .tokenPrice()
+      .then(assert.fail)
+      .catch((error) => {
+        console.log(error.mesage)
+        assert(
+          error.message.indexOf("Returned values aren't valid") >= 0,
+          "Can not use destroyed."
+        );
+      });
   });
 });

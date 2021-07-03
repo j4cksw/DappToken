@@ -5,7 +5,7 @@ import "./DappToken.sol";
 
 contract DappTokenSale {
 
-    address admin;
+    address payable admin;
     DappToken public tokenContract;
     uint256 public tokenPrice;
     uint256 public tokenSold;
@@ -38,6 +38,7 @@ contract DappTokenSale {
     function endSale() public {
         require(msg.sender == admin);
         require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
-        // Destroy contract
+        
+        selfdestruct(admin);
     }
 }
