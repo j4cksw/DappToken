@@ -1,4 +1,5 @@
 const DappTokenSale = artifacts.require("./DappTokenSale.sol");
+const DappToken = artifacts.require("./DappToken.sol");
 
 contract("DappTokenSale", (accounts) => {
   let tokenInstance;
@@ -27,48 +28,40 @@ contract("DappTokenSale", (accounts) => {
       });
   });
 
-  it("facilitates token buying", () => {
-    return DappTokenSale.deployed()
-      .then((instance) => {
-        tokenInstance = instance;
-        numberOfTokens = 10;
-        return tokenInstance.buyTokens(numberOfTokens, {
-          from: buyer,
-          value: numberOfTokens * tokenPrice,
-        });
-      })
-      .then((receipt) => {
-        assert.equal(receipt.logs.length, 1, "triggers one event");
-        assert.equal(
-          receipt.logs[0].event,
-          "Sell",
-          'should be the "Sell" event'
-        );
-        assert.equal(
-          receipt.logs[0].args._buyer,
-          buyer,
-          "logs the account that purchased the tokens."
-        );
-        assert.equal(
-          receipt.logs[0].args._amount,
-          numberOfTokens,
-          "logs the number of tokens purchased."
-        );
+  it("facilitates token buying", async () => {
+    let tokenSaleInstance = await DappTokenSale.deployed();
 
-        return tokenInstance.tokenSold();
-      })
-      .then((amount) => {
-        assert.equal(
-          amount.toNumber(),
-          numberOfTokens,
-          "increments the number of tokens sold."
-        );
+    let numberOfTokens = 10;
+    let receipt = await tokenInstance.buyTokens(numberOfTokens, {
+      from: buyer,
+      value: numberOfTokens * tokenPrice,
+    });
 
-        //Try to buy tokens different from the ether value
-        return tokenInstance.buyTokens(numberOfTokens, {
-          from: buyer,
-          value: 1,
-        });
+    assert.equal(receipt.logs.length, 1, "triggers one event");
+    assert.equal(receipt.logs[0].event, "Sell", 'should be the "Sell" event');
+    assert.equal(
+      receipt.logs[0].args._buyer,
+      buyer,
+      "logs the account that purchased the tokens."
+    );
+    assert.equal(
+      receipt.logs[0].args._amount,
+      numberOfTokens,
+      "logs the number of tokens purchased."
+    );
+
+    let tokenSoldAmount = await tokenInstance.tokenSold();
+    assert.equal(
+      tokenSoldAmount.toNumber(),
+      numberOfTokens,
+      "increments the number of tokens sold."
+    );
+
+    //Try to buy tokens different from the ether value
+    tokenInstance
+      .buyTokens(numberOfTokens, {
+        from: buyer,
+        value: 1,
       })
       .then(assert.fail)
       .catch((error) => {

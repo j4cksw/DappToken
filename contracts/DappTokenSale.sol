@@ -23,7 +23,6 @@ contract DappTokenSale {
 
     // Buy tokens
     function buyTokens(uint256 _numberOfTokens) public payable {
-        // require that value is equal to tokens
         require(msg.value == multiply(_numberOfTokens, tokenPrice));
         // require that the contract has enough tokens
         // require that a transfer successful
