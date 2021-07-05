@@ -132,7 +132,6 @@ contract("DappTokenSale", (accounts) => {
       .tokenPrice()
       .then(assert.fail)
       .catch((error) => {
-        console.log(error.mesage)
         assert(
           error.message.indexOf("Returned values aren't valid") >= 0,
           "Can not use destroyed."
