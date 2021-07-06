@@ -4,6 +4,8 @@ App = {
   account: "0x0",
   loading: false,
   tokenPrice: 1000000000000000,
+  tokensSold: 0,
+  tokensAvailable: 750000,
 
   init: () => {
     console.log("App initialized");
@@ -62,9 +64,16 @@ App = {
     $("#accountAddress").html("Your address: " + account);
 
     let saleInstance = await App.contracts.DappTokenSale.deployed();
-    let tokenPrice = await saleInstance.tokenPrice();
-    App.tokenPrice = tokenPrice;
+    
+    App.tokenPrice = await saleInstance.tokenPrice();
     $('.token-price').html(web3.utils.fromWei(App.tokenPrice, "ether"));
+
+    App.tokensSold = await saleInstance.tokenSold();
+    $('.tokens-sold').html(App.tokensSold.toNumber());
+    $('.tokens-available').html(App.tokensAvailable);
+    
+    let progressPercent = App.tokensSold.toNumber() / App.tokensAvailable * 100;
+    $('#progress').css('width', progressPercent + '%');
 
     App.loading = false;
     loader.hide();
