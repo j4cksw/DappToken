@@ -77,13 +77,36 @@ App = {
     $('#progress').css('width', progressPercent + '%');
 
     let tokenInstance = await App.contracts.DappToken.deployed();
-    let balance = await tokenInstance.balanceOf(account);
-    $('.dapp-balance').html(balance.toNumber());
+    tokenInstance.balanceOf(account).then((balance) => {
+        $('.dapp-balance').html(balance.toNumber());
+    }).catch((error)=>{ 
+        $('.dapp-balance').html(0);
+    });
+    
 
     App.loading = false;
     loader.hide();
     content.show();
   },
+
+  buyTokens: async () => {
+      $('#content').hide();
+      $('#loader').show();
+
+      let numberOfTokens = $('#numberOfTokens').val();
+      let tokenSaleInstance = await App.contracts.DappTokenSale.deployed();
+      let result = await tokenSaleInstance.buyTokens(numberOfTokens, {
+          from: App.account,
+          value: numberOfTokens * App.tokenPrice,
+          gas: 500000
+      });
+      console.log("Tokens bought...");
+      $('form').trigger('reset');
+
+      $('#content').show();
+      $('#loader').hide();
+
+  }
 };
 
 $(() => {
