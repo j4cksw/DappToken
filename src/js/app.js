@@ -22,7 +22,6 @@ App = {
       );
       web3 = new Web3(App.web3Provider);
     }
-
     return App.initCopntracts();
   },
 
@@ -41,8 +40,22 @@ App = {
           console.log("Dapp Token address:", dappToken.address);
         });
 
+        App.listenForEvents();
+
         return App.render();
       });
+    });
+  },
+
+  listenForEvents: async () => {
+    let saleInstance = await App.contracts.DappTokenSale.deployed();
+    console.log(saleInstance);
+    saleInstance.Sell({
+        fromBlock: 0,
+        toBlock: 'latest'
+    }, (error, event) => {
+        console.log("event triggered", event);
+        App.render();
     });
   },
 
@@ -102,10 +115,6 @@ App = {
       });
       console.log("Tokens bought...");
       $('form').trigger('reset');
-
-      $('#content').show();
-      $('#loader').hide();
-
   }
 };
 
