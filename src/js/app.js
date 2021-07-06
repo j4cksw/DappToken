@@ -1,7 +1,8 @@
 App = {
   web3Provider: null,
   contracts: {},
-  account: '0x0',
+  account: "0x0",
+  loading: false,
 
   init: () => {
     console.log("App initialized");
@@ -43,12 +44,26 @@ App = {
   },
 
   render: async () => {
+    if (App.loading) {
+      return;
+    }
+
+    App.loading = true;
+
+    var loader = $("#loader");
+    var content = $("#content");
+
+    
+    loader.show();
+    content.hide();
+
     const accounts = await web3.eth.getAccounts();
-    console.log(accounts);
     const account = accounts[0];
-    console.log(account);
-    $('#accountAddress').html("Your address: " + account);
-  }
+    $("#accountAddress").html("Your address: " + account);
+    App.loading = false;
+    loader.hide();
+    content.show();
+  },
 };
 
 $(() => {
