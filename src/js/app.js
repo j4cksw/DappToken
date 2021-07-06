@@ -61,6 +61,7 @@ App = {
 
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];
+    App.account = account;
     $("#accountAddress").html("Your address: " + account);
 
     let saleInstance = await App.contracts.DappTokenSale.deployed();
@@ -74,6 +75,10 @@ App = {
     
     let progressPercent = App.tokensSold.toNumber() / App.tokensAvailable * 100;
     $('#progress').css('width', progressPercent + '%');
+
+    let tokenInstance = await App.contracts.DappToken.deployed();
+    let balance = await tokenInstance.balanceOf(account);
+    $('.dapp-balance').html(balance.toNumber());
 
     App.loading = false;
     loader.hide();
