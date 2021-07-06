@@ -3,6 +3,7 @@ App = {
   contracts: {},
   account: "0x0",
   loading: false,
+  tokenPrice: 1000000000000000,
 
   init: () => {
     console.log("App initialized");
@@ -53,13 +54,18 @@ App = {
     var loader = $("#loader");
     var content = $("#content");
 
-    
     loader.show();
     content.hide();
 
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];
     $("#accountAddress").html("Your address: " + account);
+
+    let saleInstance = await App.contracts.DappTokenSale.deployed();
+    let tokenPrice = await saleInstance.tokenPrice();
+    App.tokenPrice = tokenPrice;
+    $('.token-price').html(web3.utils.fromWei(App.tokenPrice, "ether"));
+
     App.loading = false;
     loader.hide();
     content.show();
